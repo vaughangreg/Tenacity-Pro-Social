@@ -1,0 +1,149 @@
+<html>
+<head>
+	<title>View Pair Test</title>
+	<style>
+
+	body {
+	  font: 10px sans-serif;
+	}
+
+	.axis path, .axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+	svg {
+		position: absolute;
+	}
+	.blueline {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+	.redline {
+	  fill: none;
+	  stroke: red;
+	  stroke-width: 1.5px;
+	}
+	
+	.bluedot {
+	  fill: white;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+	.reddot {
+	  fill: white;
+	  stroke: red;
+	  stroke-width: 1.5px;
+	}
+	</style>
+</head>
+<body>
+	<script src = "./javascripts/d3.v2.js"></script>
+	<script>
+		var targetData = <%- targetData %>;
+		var perceiverData = <%- perceiverData %>;
+		
+		
+		var margin = {top: 10, right: 10, bottom: 20, left: 40},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+		var minDate = function(){
+			var td = new Date(targetData[0].timeStamp);
+			var pd = new Date(perceiverData[0].timeStamp);
+			if (td < pd) {
+				return td;
+			}else{
+				return pd;
+			}
+		}
+		var maxDate = function(){
+			var td = new Date(targetData[targetData.length-1].timeStamp);
+			var pd = new Date(perceiverData[perceiverData.length-1].timeStamp);
+			if (td > pd) {
+				return td;
+			}else{
+				return pd;
+			}
+		}
+		var x = d3.time.scale()
+			.domain([minDate(), maxDate()])
+		    .range([0, width]);
+
+		var y = d3.scale.linear()
+		    .domain([0, 10])
+		    .range([height, 0]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
+
+		var line = d3.svg.line()
+		    .x(function(d) { return x(new Date(d.timeStamp)); })
+		    .y(function(d) { return y(d.rating); });
+
+		var targetSvg = d3.select("body").append("svg")
+		    .datum(targetData)
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		targetSvg.append("g")
+		    .attr("class", "x axis")
+		    .attr("transform", "translate(0," + height + ")")
+		    .call(xAxis);
+
+		targetSvg.append("g")
+		    .attr("class", "y axis")
+		    .call(yAxis);
+
+		targetSvg.append("path")
+		    .attr("class", "blueline")
+		    .attr("d", line);
+
+		targetSvg.selectAll(".bluedot")
+		    .data(targetData)
+		  .enter().append("circle")
+		    .attr("class", "bluedot")
+		    .attr("cx", line.x())
+		    .attr("cy", line.y())
+		    .attr("r", 3.5);
+		
+		var perceiverSvg = d3.select("body").append("svg")
+		    .datum(perceiverData)
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+/*
+		perceiverSvg.append("g")
+		    .attr("class", "x axis")
+		    .attr("transform", "translate(0," + height + ")")
+		    .call(xAxis);
+
+		perceiverSvg.append("g")
+		    .attr("class", "y axis")
+		    .call(yAxis);
+*/
+		perceiverSvg.append("path")
+		    .attr("class", "redline")
+		    .attr("d", line);
+
+		perceiverSvg.selectAll(".reddot")
+		    .data(perceiverData)
+		  .enter().append("circle")
+		    .attr("class", "reddot")
+		    .attr("cx", line.x())
+		    .attr("cy", line.y())
+		    .attr("r", 3.5);
+
+		</script>
+	
+</body>
+</html>
+

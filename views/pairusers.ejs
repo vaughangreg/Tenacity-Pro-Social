@@ -1,0 +1,28 @@
+<html>
+<head>
+<title>Pair Users Test</title>
+<head>
+<body>
+	<form action="/pairusers" method="post">
+		<div class="leftSelection">
+			<h1>User1</h1>
+			<select name='user1'>
+			<% for (var key in Object.keys(currentUsers)){ %>
+				<option value='<%= Object.keys(currentUsers)[key] %>'><%= currentUsers[Object.keys(currentUsers)[key]].name %></option>
+			<% } %>
+			</select>
+		</div>
+		
+		<div class="rightSelection">
+			<h1>User2</h1>
+			<select name='user2'>
+			<% for (var key in Object.keys(currentUsers)){ %>
+				<option value='<%= Object.keys(currentUsers)[key] %>'><%= currentUsers[Object.keys(currentUsers)[key]].name %></option>
+			<% } %>
+			</select>
+		<div>
+		
+	<input type="submit" value="Submit">
+	</form>
+</body>
+</html>

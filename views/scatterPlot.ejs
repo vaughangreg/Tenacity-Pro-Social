@@ -1,0 +1,105 @@
+<html>
+<head>
+	<title>View Pair Test</title>
+	<style>
+
+	body {
+	  font: 10px sans-serif;
+	}
+
+	.axis path, .axis line {
+	  fill: none;
+	  stroke: #000;
+	  shape-rendering: crispEdges;
+	}
+	svg {
+		position: absolute;
+	}
+	.blueline {
+	  fill: none;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+	.redline {
+	  fill: none;
+	  stroke: red;
+	  stroke-width: 1.5px;
+	}
+	
+	.bluedot {
+	  fill: white;
+	  stroke: steelblue;
+	  stroke-width: 1.5px;
+	}
+	.reddot {
+	  fill: white;
+	  stroke: red;
+	  stroke-width: 1.5px;
+	}
+	</style>
+</head>
+<body>
+	<script src = "./javascripts/d3.v2.js"></script>
+	<script>
+		var targetData = <%- plotData %>;
+		
+		
+		var margin = {top: 10, right: 10, bottom: 20, left: 40},
+		    width = 960 - margin.left - margin.right,
+		    height = 500 - margin.top - margin.bottom;
+	
+		var x = d3.scale.linear()
+			.domain([0, 10])
+		    .range([0, width]);
+
+		var y = d3.scale.linear()
+		    .domain([0, 10])
+		    .range([height, 0]);
+
+		var xAxis = d3.svg.axis()
+		    .scale(x)
+		    .orient("bottom");
+
+		var yAxis = d3.svg.axis()
+		    .scale(y)
+		    .orient("left");
+
+		var line = d3.svg.line()
+		    .x(function(d) { return x(d.x); })
+		    .y(function(d) { return y(d.y); });
+
+		var targetSvg = d3.select("body").append("svg")
+		    .datum(targetData)
+		    .attr("width", width + margin.left + margin.right)
+		    .attr("height", height + margin.top + margin.bottom)
+		  .append("g")
+		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+		
+		targetSvg.append("g")
+		    .attr("class", "x axis")
+		    .attr("transform", "translate(0," + height + ")")
+		    .call(xAxis);
+
+		targetSvg.append("g")
+		    .attr("class", "y axis")
+		    .call(yAxis);
+/*
+		targetSvg.append("path")
+		    .attr("class", "blueline")
+		    .attr("d", line);
+*/
+		targetSvg.selectAll(".bluedot")
+		    .data(targetData)
+		  .enter().append("circle")
+		    .attr("class", "bluedot")
+		    .attr("cx", line.x())
+		    .attr("cy", line.y())
+		    .attr("r", 3.5);
+		
+	
+
+		</script>
+	
+</body>
+</html>
+
